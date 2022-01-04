@@ -35,6 +35,7 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       with:
+        config: .github/slack.yaml
         status: ${{ job.status }}
         steps: ${{ toJson(steps) }}
         channel: '#foodco-backend-build'
