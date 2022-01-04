@@ -1,5 +1,7 @@
 username: GitHub-CI
 icon_url: https://octodex.github.com/images/femalecodertocat.png
+env:
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 pretext: Triggered via {{eventName}} by {{actor}} {{default action "action"}} {{ref}} `{{diffRef}}`
 title: GitHub Actions
