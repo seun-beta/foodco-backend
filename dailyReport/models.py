@@ -11,30 +11,24 @@ TIME_OF_DAY =  (
     )
 
 RAW_MATERIALS = (
-('Flour','Flour')
-('Flour','Flour')
-('Flour','Flour')
-('Flour','Flour')
-('Flour','Flour')
+('sugar','Sugar'),
+('salt','Salt'),
 ('Flour','Flour')
 )
 
 PRODUCTS_PRODUCED = (
     
     
-    
-    ('meat_pie','Meat Pie')
-    ('meat_pie','Meat Pie')
-    ('meat_pie','Meat Pie')
-    ('meat_pie','Meat Pie')
-    ('meat_pie','Meat Pie')
+    ('meat_pie','Meat Pie'),
+    ('chicken_pie','Chicken Pie'),
+    ('doughnut','Doughnut')
 )
 
 
 
     
 
-class RawMaterialRecieved(models.Models):
+class RawMaterialRecieved(models.Model):
     material = models.CharField(choices=RAW_MATERIALS,max_length=255)
     amount=models.FloatField() #in grams
     price = models.FloatField() 
@@ -51,8 +45,8 @@ class RawMaterialRecieved(models.Models):
     
 class MorningEntry(models.Model):
     raw_material = models.ForeignKey(RawMaterialRecieved, on_delete=models.CASCADE)
-    created_by = models.CharField()
-    time_of_day =models.CharField(choices=TIME_OF_DAY)
+    created_by = models.CharField(max_length=255)
+    time_of_day =models.CharField(choices=TIME_OF_DAY,max_length=255)
     date = models.DateField(auto_now_add=True)
     created_at= models.DateTimeField( auto_now=False, auto_now_add=True)
     
@@ -67,6 +61,7 @@ class MorningEntry(models.Model):
     
 class Disribution(models.Model):
     cost_of_distribution = models.FloatField()
+    date = models.DateField( auto_now=False, auto_now_add=True)
     
     
     
@@ -87,7 +82,7 @@ class EndOfDayReport(models.Model):
   
     
 class Pastries(models.Model):
-    product = models.CharField(choices=PRODUCTS_PRODUCED)
+    product = models.CharField(max_length=255,choices=PRODUCTS_PRODUCED)
     quantity = models.IntegerField()
     price = models.FloatField()
     # use quantity and price to calculate total price of all pastries made in a day
