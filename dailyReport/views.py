@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
@@ -6,7 +7,7 @@ from rest_framework import status
 from rest_framework.serializers import Serializer
 from .serializers import *
 from .models import *
-
+import datetime
 # Create your views here.
 
 
@@ -101,3 +102,17 @@ def get_morning_reports_by_date(request,date):
     
     
     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_full_report_by_date(request):
+    morning_report = RawMaterialRecieved.objects.filter(date=datetime.datetime.today())
+    evening_report = EndOfDayReport.objects.get(date=datetime.datetime.today())
+    morning_reportSerializer = RawMaterialsRecievedSerializer(morning_report,many=True)
+    end_of_day_reportSerializer = EndOfDayReportSerializer(evening_report)
+    response = Response()
+    response.data = {
+        'status':200,
+        'data':[ {'raw_materials':morning_reportSerializer.data, 'report':end_of_day_reportSerializer.data}]
+    }
+    return response
