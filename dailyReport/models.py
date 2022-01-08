@@ -23,6 +23,13 @@ PRODUCTS_PRODUCED = (
     ('chicken_pie','Chicken Pie'),
     ('doughnut','Doughnut')
 )
+BRANCH = (
+    
+    
+    ('jericho','Jericho'),
+    ('ring_road','Ring Road'),
+    ('bodija','Bodija')
+)
 
 
 
@@ -34,7 +41,7 @@ class RawMaterialRecieved(models.Model):
     price = models.FloatField() 
     transfer_cost = models.FloatField()
     material_cost = models.FloatField()
-    time_of_day = models.DateField(verbose_name="date", auto_now=False, auto_now_add=True)
+    date = models.DateField(verbose_name="date", auto_now=False, auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self) -> str:
@@ -61,7 +68,12 @@ class MorningEntry(models.Model):
     
 class Disribution(models.Model):
     cost_of_distribution = models.FloatField()
+    branch = models.CharField(max_length=255,choices=BRANCH,default='Jericho')
     date = models.DateField( auto_now=False, auto_now_add=True)
+    
+    
+    def __str__(self) -> str:
+        return f"Distrobution for {self.branch} on {self.date}"
     
     
     
@@ -70,12 +82,12 @@ class EndOfDayReport(models.Model):
     no_of_pastries = models.IntegerField()
     no_of_pastries_sent = models.IntegerField()
     no_of_pastries_not_sold = models.IntegerField()
-    distribution = models.OneToOneField(Disribution,on_delete=CASCADE)
+    distribution = models.ForeignKey(Disribution,on_delete=CASCADE)
     date = models.DateField( auto_now=False, auto_now_add=True)
     created_at = models.DateTimeField( auto_now=False, auto_now_add=True)
     
     def __str__(self) -> str:
-        return f" End of Day Report for ---{self.date}"
+        return f" End of Day Report for {self.date}"
     
   
   
