@@ -14,7 +14,7 @@ import datetime
 
 
 @api_view(['POST'])
-def end_of_day_report(request):
+def post_end_of_day_report(request):
     
     data = request.data 
     serializer = EndOfDayReportSerializer(data)
