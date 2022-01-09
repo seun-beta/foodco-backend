@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.db.models.deletion import CASCADE
 from django.db.models.fields import DateTimeField
@@ -45,7 +46,13 @@ class RawMaterialRecieved(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self) -> str:
-        return self.material
+        return f"{self.material} on {self.date}"
+    
+    class Meta:
+        unique_together=('material','date')
+        constraints = [
+            models.UniqueConstraint(fields=['material', 'date'], name='material for a day')
+        ]
     
     
     
@@ -98,3 +105,11 @@ class Pastries(models.Model):
     quantity = models.IntegerField()
     price = models.FloatField()
     # use quantity and price to calculate total price of all pastries made in a day
+    
+    
+class FullReport(models.Model):
+    morning_report = models.ForeignKey(RawMaterialRecieved,on_delete=CASCADE,blank=True)
+    evening_report = models.ForeignKey(EndOfDayReport,on_delete=CASCADE,blank=True)
+    date = models.DateField(auto_now_add=True)
+    
+    

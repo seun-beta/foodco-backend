@@ -13,6 +13,22 @@ class RawMaterialsRecievedSerializer(serializers.ModelSerializer):
         fields =  '__all__'
                   
                   
+class PostRawMaterialsRecievedSerializer(serializers.ModelSerializer):
+    
+    
+    class Meta:
+        model = RawMaterialRecieved
+        fields =  [
+            
+                "material",
+    "amount",
+    "price",
+    "transfer_cost",
+    "material_cost"
+            
+        ]
+                  
+                  
         
 class MorningEntry(serializers.ModelSerializer):
     
