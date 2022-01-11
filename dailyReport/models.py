@@ -1,7 +1,7 @@
 from datetime import date
 from django.db import models
 from django.db.models.deletion import CASCADE
-from django.db.models.fields import DateTimeField
+from django.db.models.fields import CharField, DateTimeField
 
 # Create your models here.
 
@@ -34,9 +34,9 @@ BRANCH = (
 
 
 
-    
 
 class RawMaterialRecieved(models.Model):
+    pastry = models.CharField(choices=PRODUCTS_PRODUCED, max_length=50)
     material = models.CharField(choices=RAW_MATERIALS,max_length=255)
     amount=models.FloatField() #in grams
     price = models.FloatField() 
@@ -48,13 +48,31 @@ class RawMaterialRecieved(models.Model):
     def __str__(self) -> str:
         return f"{self.material} on {self.date}"
     
-    class Meta:
-        unique_together=('material','date')
-        constraints = [
-            models.UniqueConstraint(fields=['material', 'date'], name='material for a day')
-        ]
+    # class Meta:
+    #     unique_together=('material','date')
+    #     constraints = [
+    #         models.UniqueConstraint(fields=['material', 'date'], name='material for a day')
+    #     ]
+    
+# class Pastry(models.Model):
+#     name = models.CharField(choices=PRODUCTS_PRODUCED,max_length=255)
+#     raw_materials = models.ForeignKey(RawMaterialRecieved,on_delete=CASCADE)
+#     date = models.DateField(auto_now_add=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
     
     
+#     def __str__(self):
+#         return f"{self.name} on {self.date}"
+
+  
+    
+class Pastry(models.Model):
+    product = models.CharField(max_length=255,choices=PRODUCTS_PRODUCED)
+    amount = models.IntegerField()
+    
+    def __str__(self) -> str:
+        return f"{self.product}"
+    # use quantity and price to calculate total price of all pastries made in a day
     
     
 class MorningEntry(models.Model):
@@ -77,7 +95,7 @@ class Disribution(models.Model):
     cost_of_distribution = models.FloatField()
     branch = models.CharField(max_length=255,choices=BRANCH,default='Jericho')
     date = models.DateField( auto_now=False, auto_now_add=True)
-    
+    pastries = models.ForeignKey(Pastry,on_delete=CASCADE,null=True)
     
     def __str__(self) -> str:
         return f"Distrobution for {self.branch} on {self.date}"
@@ -98,13 +116,6 @@ class EndOfDayReport(models.Model):
     
   
   
-  
-    
-class Pastries(models.Model):
-    product = models.CharField(max_length=255,choices=PRODUCTS_PRODUCED)
-    quantity = models.IntegerField()
-    price = models.FloatField()
-    # use quantity and price to calculate total price of all pastries made in a day
     
     
 class FullReport(models.Model):
