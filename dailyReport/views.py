@@ -11,7 +11,29 @@ from .serializers import *
 from .models import *
 import datetime
 # Create your views here.
-
+@api_view(['GET'])
+def get_branch_list(request):
+    return Response(data= ['Jericho',
+    'Ring Road',
+    'Bodija'
+])
+@api_view(['GET'])
+def get_materials_list(request):
+    return Response(data= 
+                    ['sugar',
+    'salt',
+    'flour',
+    'butter',
+])
+@api_view(['GET'])
+def get_products_list(request):
+    return Response(data= 
+                    [
+                        'Meat Pie',
+    'Chicken Pie',
+    'Doughnut'
+    'Sussage'
+])
 
 @api_view(['POST'])
 def post_end_of_day_report(request):
@@ -70,20 +92,32 @@ def daily_distribution(request):
 @api_view(['POST'])
 def post_raw_material(request):
     data = JSONParser().parse(request)
-    serializer = PostRawMaterialsRecievedSerializer(data=data)
+    serializer = PostRawMaterialsRecievedSerializer(data=data,many = True)
     response = Response()
-    material = data['material']
     date = datetime.datetime.today()    
-    if not RawMaterialRecieved.objects.filter(date=date).filter(material=material).exists():
-        serializer = PostRawMaterialsRecievedSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            print(data)
-            response.data = { "data":serializer.data, "status":status.HTTP_201_CREATED,}
-            return response
+    for obj in data:
+        material = obj['material']
+        if not RawMaterialRecieved.objects.filter(date=date).filter(material=material).exists():
+            serializer = PostRawMaterialsRecievedSerializer(data=data,many= True)
+            if serializer.is_valid():
+                serializer.save()
+                print(data)
+                response.data = { "data":serializer.data, "status":status.HTTP_201_CREATED,}
+                return response
 
-        return Response(data=serializer.errors,status = status.HTTP_400_BAD_REQUEST)
+                return Response(data=serializer.errors,status = status.HTTP_400_BAD_REQUEST)
     return Response(data={'status':status.HTTP_400_BAD_REQUEST,'message':'Data already exists'})
+
+
+
+
+
+@api_view(['GET'])
+def post_end_of_day_report(request):
+    response = Response()
+    
+    
+    return response
 
 
 @api_view(['GET'])
